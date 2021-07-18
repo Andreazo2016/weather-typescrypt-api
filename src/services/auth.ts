@@ -7,6 +7,7 @@ export interface PayloadAuth {
   name: string;
 }
 
+
 export default class AuthService {
   public static hashPassword(password: string, salt = 10): Promise<string> {
     return bcrypt.hash(password, salt)
@@ -22,5 +23,10 @@ export default class AuthService {
     return jwt.sign(payload, secretKey, {
       expiresIn
     })
+  }
+
+  public static decodeToken(token: string): PayloadAuth {
+    const secretKey = config.get('App.auth.secretKey') as string
+    return jwt.verify(token, secretKey) as PayloadAuth
   }
 }
